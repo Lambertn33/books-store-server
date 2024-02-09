@@ -17,6 +17,32 @@ export class OrderRepository {
     });
   }
 
+  async getUserOrder(userId: number, orderId: number) {
+    return await prisma.order.findFirst({
+      where: {
+        userId,
+        AND: {
+          id: orderId
+        },
+      },
+      include: {
+        books: {
+          select: {
+            book: {
+              select: {
+                cover_image: true,
+                price: true,
+                title: true,
+                writer: true,
+                tags: true,
+              },
+            },
+          },
+        },
+      },
+    });
+  }
+
   async makeOrder(
     userId: number,
     bookIds: number[]
