@@ -1,4 +1,4 @@
-import { verify } from "jsonwebtoken";
+import { JwtPayload, verify } from "jsonwebtoken";
 
 import { Request, Response, NextFunction } from "express";
 
@@ -21,7 +21,7 @@ const checkAuth = async (
   if (!tokenHeader) return res.status(401).json({ message: "unauthenticated" });
 
   const token = tokenHeader.split(" ")[1];
-  const decodedToken = verify(token, testSecretKey) as any;
+  const decodedToken = verify(token, testSecretKey) as JwtPayload;
   if (!decodedToken)
     return res.status(401).json({ message: "invalid or expired token" });
 

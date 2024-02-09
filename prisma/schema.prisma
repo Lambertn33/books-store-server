@@ -39,10 +39,16 @@ enum BookTag {
   ESSAY
 }
 
+enum OrderStatus {
+  ORDERED
+  CANCELED
+}
+
 model Order {
   id        Int         @id @default(autoincrement())
   userId    Int
   user      User        @relation(fields: [userId], references: [id])
+  status    OrderStatus
   createdAt DateTime    @default(now())
   books     OrderBook[]
 
