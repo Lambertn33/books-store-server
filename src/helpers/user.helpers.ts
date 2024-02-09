@@ -14,6 +14,6 @@ export function generateToken(user: UserInterface) {
       },
     },
     testSecretKey,
-    { expiresIn: "1h" }
+    { expiresIn: "10h" }
   );
 }

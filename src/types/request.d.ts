@@ -9,8 +9,7 @@ interface AuthenticatedUser {
 declare global {
   namespace Express {
     interface Request {
-      authenticatedUser?: AuthenticatedUser;
-      // Add other custom properties if needed
+      authenticatedUser?: AuthenticatedUser | null;
     }
   }
 }
