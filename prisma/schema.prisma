@@ -11,21 +11,23 @@ datasource db {
 }
 
 model User {
-  id       Int      @id @default(autoincrement())
+  id       Int     @id @default(autoincrement())
   username String
   password String
   points   Int
+  orders   Order[]
 
   @@map("users")
 }
 
 model Book {
-  id          Int      @id @default(autoincrement())
+  id          Int         @id @default(autoincrement())
   title       String
   writer      String
   cover_image String
   price       Float
   tags        BookTag[]
+  orders      OrderBook[]
 
   @@map("books")
 }
@@ -38,10 +40,21 @@ enum BookTag {
 }
 
 model Order {
-  id        Int     @id @default(autoincrement())
+  id        Int         @id @default(autoincrement())
   userId    Int
-  bookId    Int
-  timestamp DateTime @default(now())
+  user      User        @relation(fields: [userId], references: [id])
+  createdAt DateTime    @default(now())
+  books     OrderBook[]
 
   @@map("orders")
+}
+
+model OrderBook {
+  orderId Int
+  bookId  Int
+  order   Order @relation(fields: [orderId], references: [id])
+  book    Book  @relation(fields: [bookId], references: [id])
+
+  @@id([bookId, orderId])
+  @@map("order_books")
 }
