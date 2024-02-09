@@ -1,0 +1,84 @@
+{
+  "api-docs": [
+    {
+      "name": "login",
+      "route": "/api/auth/login",
+      "method": "POST",
+      "inputs": ["username", "password"],
+      "parameters": [],
+      "requiresAuth": false
+    },
+    {
+      "name": "register",
+      "route": "/api/auth/register",
+      "method": "POST",
+      "inputs": ["username", "password"],
+      "parameters": [],
+      "requiresAuth": false
+    },
+    {
+      "name": "logout",
+      "route": "/api/auth/logout",
+      "method": "POST",
+      "inputs": [],
+      "parameters": [],
+      "requiresAuth": true
+    },
+    {
+      "name": "user profile",
+      "route": "/api/auth/profile",
+      "method": "GET",
+      "inputs": [],
+      "parameters": [],
+      "requiresAuth": true
+    },
+    {
+      "name": "get all books",
+      "route": "/api/books",
+      "method": "GET",
+      "inputs": [],
+      "parameters": [],
+      "requiresAuth": false
+    },
+    {
+      "name": "get one book",
+      "route": "/api/books/:bookId",
+      "method": "GET",
+      "inputs": [],
+      "parameters": ["bookId"],
+      "requiresAuth": false
+    },
+    {
+      "name": "get user orders",
+      "route": "/api/orders",
+      "method": "GET",
+      "inputs": [],
+      "parameters": [],
+      "requiresAuth": true
+    },
+    {
+      "name": "get user single order with related books",
+      "route": "/api/orders/:orderId",
+      "method": "GET",
+      "inputs": [],
+      "parameters": ["orderId"],
+      "requiresAuth": true
+    },
+    {
+      "name": "make an order",
+      "route": "/api/orders",
+      "method": "POST",
+      "inputs": ["booksIds[]"],
+      "parameters": [],
+      "requiresAuth": true
+    },
+    {
+      "name": "cancel an order",
+      "route": "/api/orders/:orderId",
+      "method": "PUT",
+      "inputs": [],
+      "parameters": ["orderId"],
+      "requiresAuth": true
+    }
+  ]
+}

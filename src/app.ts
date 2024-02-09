@@ -4,7 +4,7 @@ import bodyParser from "body-parser";
 
 import cors from "cors";
 
-import { userRoutes, bookRoutes, orderRoutes } from "./routes";
+import { userRoutes, bookRoutes, orderRoutes, docsRoutes } from "./routes";
 
 const app = express();
 
@@ -19,5 +19,7 @@ app.use("/api/auth", userRoutes);
 app.use("/api/books", bookRoutes);
 
 app.use("/api/orders", orderRoutes);
+
+app.use("/api/docs", docsRoutes);
 
 app.listen(4000);
