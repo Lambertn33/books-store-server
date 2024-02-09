@@ -3,6 +3,7 @@ import prisma from "../db";
 import { OrderInterface } from "../entities/order.entity";
 
 export class OrderRepository {
+  // get all user orders
   async getUserOrders(userId: number): Promise<OrderInterface[]> {
     return await prisma.order.findMany({
       where: {
@@ -17,12 +18,13 @@ export class OrderRepository {
     });
   }
 
+  // get a single order with its books
   async getUserOrder(userId: number, orderId: number) {
     return await prisma.order.findFirst({
       where: {
         userId,
         AND: {
-          id: orderId
+          id: orderId,
         },
       },
       include: {
@@ -43,6 +45,7 @@ export class OrderRepository {
     });
   }
 
+  // make an order
   async makeOrder(
     userId: number,
     bookIds: number[]
@@ -74,7 +77,6 @@ export class OrderRepository {
     }
 
     const transaction = await prisma.$transaction(async (prisma) => {
-      // Create the order
       const newOrder = await prisma.order.create({
         data: {
           amount: totalAmount,
@@ -83,7 +85,6 @@ export class OrderRepository {
         },
       });
 
-      // Create orderBooks
       const orderBooksData = bookIds.map((bookId) => ({
         orderId: newOrder.id,
         bookId,
@@ -92,7 +93,6 @@ export class OrderRepository {
         data: orderBooksData,
       });
 
-      // Deduct points from user's account
       await prisma.user.update({
         where: { id: userId },
         data: { points: user?.points! - totalAmount },
@@ -104,7 +104,42 @@ export class OrderRepository {
       };
     });
 
-    // Return the newly created order
+    return transaction;
+  }
+
+  // cancel an order
+  async cancelOrder(
+    userId: number,
+    orderId: number
+  ): Promise<{ success: boolean; message?: string }> {
+    const order = await prisma.order.findFirst({
+      where: {
+        id: orderId,
+        userId,
+      },
+      select: {
+        id: true,
+        userId: true,
+        amount: true,
+      },
+    });
+
+    if (!order) return { success: false, message: "order not found" };
+
+    const transaction = await prisma.$transaction(async (prisma) => {
+      await prisma.order.update({
+        where: { id: orderId },
+        data: { status: "CANCELED" },
+      });
+
+      await prisma.user.update({
+        where: { id: userId },
+        data: { points: { increment: order.amount } },
+      });
+
+      return { success: true, message: "order canceled successfully" };
+    });
+
     return transaction;
   }
 }

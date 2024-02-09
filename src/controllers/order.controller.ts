@@ -33,3 +33,18 @@ export const makeOrder = async (req: Request, res: Response) => {
     ? res.status(200).json({ message: orderResult.message })
     : res.status(500).json({ error: orderResult.message });
 };
+
+export const cancelOrder = async (req: Request, res: Response) => {
+  const userId = req.authenticatedUser?.id;
+
+  const { orderId } = req.params;
+
+  const cancelOrderResult = await orderServices.cancelOrder(
+    userId!,
+    parseInt(orderId)
+  );
+
+  return cancelOrderResult.success
+    ? res.status(200).json({ message: cancelOrderResult.message })
+    : res.status(500).json({ error: cancelOrderResult.message });
+};

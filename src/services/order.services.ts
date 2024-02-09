@@ -13,4 +13,8 @@ export class OrderServices {
   async makeOrder(userId: number, bookIds: number[]) {
     return orderRepository.makeOrder(userId, bookIds);
   }
+
+  async cancelOrder(userId: number, orderId: number) {
+    return orderRepository.cancelOrder(userId, orderId);
+  }
 }

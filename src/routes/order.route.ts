@@ -3,9 +3,10 @@ import { Router } from "express";
 import checkAuth from "../middleware/auth.middleware";
 
 import {
+  cancelOrder,
   getUserOrders,
   getUserOrder,
-  makeOrder,
+  makeOrder
 } from "../controllers/order.controller";
 
 const router = Router();
@@ -13,6 +14,8 @@ const router = Router();
 router.get("/", checkAuth, getUserOrders);
 
 router.get("/:orderId", checkAuth, getUserOrder);
+
+router.put("/:orderId", checkAuth, cancelOrder)
 
 router.post("/", checkAuth, makeOrder);
 
