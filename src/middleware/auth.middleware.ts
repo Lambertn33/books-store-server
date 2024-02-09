@@ -2,18 +2,10 @@ import { JwtPayload, verify } from "jsonwebtoken";
 
 import { Request, Response, NextFunction } from "express";
 
-interface AuthenticatedRequest extends Request {
-  authenticatedUser?: {
-    id: number;
-    username: string;
-    points: number;
-  };
-}
-
 const testSecretKey = "testSecretKey"; // might change in large projects or production
 
 const checkAuth = async (
-  req: AuthenticatedRequest,
+  req: Request,
   res: Response,
   next: NextFunction
 ) => {
