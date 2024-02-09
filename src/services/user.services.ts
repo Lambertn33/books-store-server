@@ -1,3 +1,4 @@
+import { UserInterface } from "@/entities";
 import { UserRepository } from "../repositories/user.repositories";
 
 const userRepository = new UserRepository();
@@ -9,5 +10,9 @@ export class UserServices {
 
   async loginUser(username: string, password: string): Promise<string | null> {
     return userRepository.loginUser(username, password);
+  }
+  
+  async userProfile(id: number): Promise<UserInterface | null> {
+    return userRepository.userProfile(id);
   }
 }

@@ -39,3 +39,11 @@ export const logoutUser = (req: Request, res: Response) => {
 
   return res.status(200).json({ message: 'Logout successful' });
 };
+
+export const userProfile = async(req: Request, res: Response) => {
+  const userId = req.authenticatedUser?.id;
+
+  const userProfile = await userServices.userProfile(userId!);
+
+  return res.status(200).json(userProfile);
+}
