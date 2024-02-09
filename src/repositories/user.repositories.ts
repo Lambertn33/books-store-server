@@ -1,11 +1,19 @@
-import prisma from "@/db";
+import prisma from "../db";
 
-import { UserInterface } from "@/entities";
+import { UserInterface } from "../entities";
 
-import { hash } from "bcrypt";
+import { generateToken } from "../helpers/user.helpers";
+
+import { hash, compare } from "bcrypt";
 
 export class UserRepository {
-  async createUser(username: string, password: string): Promise<void> {
+  async createUser(username: string, password: string): Promise<{ success: boolean, message?: string }> {
+    const existingUser = await this.findUserByUsername(username);
+
+    if (existingUser) {
+      return { success: false, message: 'Username is already taken' };
+    }
+
     const hashedPassword = await hash(password, 10);
     await prisma.user.create({
       data: {
@@ -14,12 +22,13 @@ export class UserRepository {
         points: 100,
       },
     });
+    return { success: true };
   }
 
   async findUserByUsername(username: string): Promise<UserInterface | null> {
     return await prisma.user.findFirst({
       where: {
-        username: username,
+        username,
       },
     });
   }
@@ -29,4 +38,17 @@ export class UserRepository {
       where: { id: userId },
     });
   }
+
+  async loginUser(username: string, password: string): Promise<string | null> {
+    const user = await this.findUserByUsername(username);
+    if (!user) {
+      return null;
+    }
+    const passwordMatch = await compare(password, user.password);
+    if (!passwordMatch) {
+      return null;
+    }
+    return generateToken(user);
+  }
+
 }
