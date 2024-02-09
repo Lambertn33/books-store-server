@@ -49,6 +49,7 @@ model Order {
   userId    Int
   user      User        @relation(fields: [userId], references: [id])
   status    OrderStatus
+  amount    Int
   createdAt DateTime    @default(now())
   books     OrderBook[]
 
