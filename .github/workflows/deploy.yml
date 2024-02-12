@@ -1,0 +1,32 @@
+name: deployment
+on:
+  push:
+    branches:
+      - main
+jobs:
+  build_and_installation:
+    runs-on: ubuntu-latest
+    steps:
+      - name: get the codes
+        uses: actions/checkout@v4
+      - name: install dependencies
+        run: npm install
+      - name: build the project
+        run: tsc --build
+      - name: produce the artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: dist-files
+          path: dist
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build_and_installation
+    steps:
+      - name: install node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      - name: download the artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: dist-files
