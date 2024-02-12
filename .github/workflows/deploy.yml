@@ -17,6 +17,8 @@ jobs:
         run: tsc --build
       - name: Copy Prisma folder
         run: cp -R prisma dist/prisma
+      - name: Copy data.json
+        run: cp data.json dist/data.json
       - name: produce the artifacts
         uses: actions/upload-artifact@v3
         with:
