@@ -11,11 +11,11 @@ import {
 
 const router = Router();
 
-router.get("/", checkAuth, getUserOrders);
+router.get("/:userId", checkAuth, getUserOrders);
 
-router.get("/:orderId", checkAuth, getUserOrder);
+router.get("/:userId/:orderId", checkAuth, getUserOrder);
 
-router.put("/:orderId", checkAuth, cancelOrder)
+router.put("/:userId/:orderId", checkAuth, cancelOrder)
 
 router.post("/", checkAuth, makeOrder);
 

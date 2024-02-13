@@ -50,26 +50,26 @@
     },
     {
       "name": "get user orders",
-      "route": "/api/orders",
+      "route": "/api/orders/:userId",
       "method": "GET",
       "inputs": [],
-      "parameters": [],
+      "parameters": ["userId"],
       "requiresAuth": true
     },
     {
       "name": "get user single order with related books",
-      "route": "/api/orders/:orderId",
+      "route": "/api/orders/:userId/:orderId",
       "method": "GET",
       "inputs": [],
-      "parameters": ["orderId"],
+      "parameters": ["userId", "orderId"],
       "requiresAuth": true
     },
     {
       "name": "make an order",
-      "route": "/api/orders",
+      "route": "/api/orders/:userId",
       "method": "POST",
       "inputs": ["booksIds[]"],
-      "parameters": [],
+      "parameters": ["userId"],
       "requiresAuth": true
     },
     {

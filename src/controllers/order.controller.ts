@@ -5,7 +5,7 @@ import { OrderServices } from "../services/order.services";
 const orderServices = new OrderServices();
 
 export const getUserOrders = async (req: Request, res: Response) => {
-  const userId = req.authenticatedUser?.id;
+  const userId = req.params.userId;
 
   const orders = await orderServices.getUserOrders(userId!);
 
@@ -13,7 +13,7 @@ export const getUserOrders = async (req: Request, res: Response) => {
 };
 
 export const getUserOrder = async (req: Request, res: Response) => {
-  const userId = req.authenticatedUser?.id;
+  const userId = req.params.userId;
 
   const { orderId } = req.params;
 
@@ -23,7 +23,7 @@ export const getUserOrder = async (req: Request, res: Response) => {
 };
 
 export const makeOrder = async (req: Request, res: Response) => {
-  const userId = req.authenticatedUser?.id;
+  const userId = req.params.userId;
 
   const bookIds = req.body.booksIds as number[];
 
@@ -35,7 +35,7 @@ export const makeOrder = async (req: Request, res: Response) => {
 };
 
 export const cancelOrder = async (req: Request, res: Response) => {
-  const userId = req.authenticatedUser?.id;
+  const userId = req.params.userId;
 
   const { orderId } = req.params;
 
