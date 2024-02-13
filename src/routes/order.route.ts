@@ -17,6 +17,6 @@ router.get("/:userId/:orderId", checkAuth, getUserOrder);
 
 router.put("/:userId/:orderId", checkAuth, cancelOrder)
 
-router.post("/", checkAuth, makeOrder);
+router.post("/:userId", checkAuth, makeOrder);
 
 export default router;
