@@ -30,7 +30,7 @@ export const makeOrder = async (req: Request, res: Response) => {
   const orderResult = await orderServices.makeOrder(parseInt(userId!), bookIds);
 
   return orderResult.success
-    ? res.status(200).json({ message: orderResult.message })
+    ? res.status(200).json({ message: orderResult.message, order: orderResult.order })
     : res.status(500).json({ error: orderResult.message });
 };
 
