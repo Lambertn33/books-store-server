@@ -14,6 +14,7 @@ export class OrderRepository {
         amount: true,
         status: true,
         userId: true,
+        createdAt: true
       },
     });
   }
