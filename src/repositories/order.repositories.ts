@@ -14,7 +14,7 @@ export class OrderRepository {
         amount: true,
         status: true,
         userId: true,
-        createdAt: true
+        createdAt: true,
       },
     });
   }
@@ -50,63 +50,81 @@ export class OrderRepository {
   async makeOrder(
     userId: number,
     bookIds: number[]
-  ): Promise<{ success: boolean; message?: string }> {
-    const user = await prisma.user.findUnique({
-      where: { id: userId },
-      select: { points: true },
-    });
+  ): Promise<{
+    success: boolean;
+    message?: string;
+    order?: {
+      id: number;
+      userId: number;
+      status: "ORDERED" | "CANCELED";
+      amount: number;
+      createdAt: Date;
+    };
+  }> {
+    try {
+      const user = await prisma.user.findUnique({
+        where: { id: userId },
+        select: { points: true },
+      });
 
-    const books = await prisma.book.findMany({
-      where: {
-        id: {
-          in: bookIds,
+      const books = await prisma.book.findMany({
+        where: {
+          id: {
+            in: bookIds,
+          },
         },
-      },
-      select: {
-        id: true,
-        price: true,
-      },
-    });
+        select: {
+          id: true,
+          price: true,
+        },
+      });
 
-    const totalAmount = books.reduce((acc, book) => acc + book.price, 0);
+      const totalAmount = books.reduce((acc, book) => acc + book.price, 0);
 
-    if (totalAmount > user?.points!) {
+      if (totalAmount > user?.points!) {
+        return {
+          success: false,
+          message: "You have insufficient points to buy these books",
+        };
+      }
+
+      const transaction = await prisma.$transaction(async (prisma) => {
+        const newOrder = await prisma.order.create({
+          data: {
+            amount: totalAmount,
+            status: "ORDERED",
+            userId,
+          },
+        });
+
+        const orderBooksData = bookIds.map((bookId) => ({
+          orderId: newOrder.id,
+          bookId,
+        }));
+        
+        await prisma.orderBook.createMany({
+          data: orderBooksData,
+        });
+
+        await prisma.user.update({
+          where: { id: userId },
+          data: { points: user?.points! - totalAmount },
+        });
+
+        return {
+          success: true,
+          message: "order made successfully",
+          order: newOrder,
+        };
+      });
+
+      return transaction;
+    } catch (error) {
       return {
         success: false,
-        message: "You have insufficient points to buy these books",
+        message: "An error occurred while processing the order",
       };
     }
-
-    const transaction = await prisma.$transaction(async (prisma) => {
-      const newOrder = await prisma.order.create({
-        data: {
-          amount: totalAmount,
-          status: "ORDERED",
-          userId,
-        },
-      });
-
-      const orderBooksData = bookIds.map((bookId) => ({
-        orderId: newOrder.id,
-        bookId,
-      }));
-      await prisma.orderBook.createMany({
-        data: orderBooksData,
-      });
-
-      await prisma.user.update({
-        where: { id: userId },
-        data: { points: user?.points! - totalAmount },
-      });
-
-      return {
-        success: true,
-        message: "order made successfully",
-        order: newOrder
-      };
-    });
-
-    return transaction;
   }
 
   // cancel an order
