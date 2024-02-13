@@ -102,6 +102,7 @@ export class OrderRepository {
       return {
         success: true,
         message: "order made successfully",
+        order: newOrder
       };
     });
 
