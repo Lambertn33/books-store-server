@@ -74,10 +74,10 @@
     },
     {
       "name": "cancel an order",
-      "route": "/api/orders/:orderId",
+      "route": "/api/orders/:userId/:orderId",
       "method": "PUT",
       "inputs": [],
-      "parameters": ["orderId"],
+      "parameters": ["userId", "orderId"],
       "requiresAuth": true
     }
   ]
